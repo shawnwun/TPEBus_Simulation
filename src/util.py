@@ -4,8 +4,12 @@ import operator
 import networkx as nx
 
 
-def constructMap(file_name):
-    fin = file(file_name,'r')
+def constructMap(nodefile,edgefile,trfffile):
+
+    dist = readDistance(edgefile)
+    trff = readTraffic(trfffile)
+
+    fin = file(nodefile,'r')
     line = fin.readline()
     g = nx.Graph()    
     for line in fin.readlines():
@@ -20,7 +24,40 @@ def constructMap(file_name):
 	
 	g.add_node(ID,NAME=name,VERGE=isEdge)
 	for nei in neighbors:
-	    g.add_edge(ID,nei)
+	    tup = (ID,nei)
+	    g.add_edge(ID,nei,distance=dist[tup],traffic=trff[tup])
 
+    fin.close()
     return g
+
+
+def readRoutes(filename):
+    fin = file(filename,'r')
+    routes = {}
+    for line in fin.readlines():
+	pair = line.replace('\n','').split()
+	routes[int(pair[0])] = [int(n) for n in pair[-1].split(';')]
+    fin.close()
+    return routes
+
+def readDistance(filename):
+    fin = file(filename,'r')
+    distance = {}
+    for line in fin.readlines():
+	tokens = line.replace('\n','').split()
+	distance[(int(tokens[0]),int(tokens[1]))] = int(tokens[-1])
+    fin.close()
+    return distance
+
+def readTraffic(filename):
+    fin = file(filename,'r')
+    traffic = {}
+    for line in fin.readlines():
+	tokens = line.replace('\n','').split()
+	traffic[(int(tokens[0]),int(tokens[1]))] = int(tokens[-1])
+    fin.close()
+    return traffic
+
+
+
 

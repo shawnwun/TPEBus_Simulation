@@ -22,7 +22,6 @@ scoreTable = {}
 bManager = BusManager(TPEMap, scoreTable, route)
 cManager = ClientManager(TPEMap, scoreTable)
 
-
 # Start iteration
 for i in iteration:
     bManager.notifyAllBusesMove()
