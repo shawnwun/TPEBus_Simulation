@@ -21,7 +21,7 @@ scoreTable = {}
 
 # Initialize Manager, configure it with map and table
 bManager = BusManager(TPEMap, scoreTable, route, interval)
-cManager = ClientManager(TPEMap, scoreTable)
+cManager = ClientManager(TPEMap, scoreTable, bManager)
 
 # Start iteration
 for i in iteration:
