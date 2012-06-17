@@ -22,10 +22,10 @@ def constructMap(nodefile,edgefile,trfffile):
 	    isEdge = True
 	neighbors = [int(n) for n in tokens[-1].split(';')]
 	
-	g.add_node(ID,NAME=name,VERGE=isEdge)
+	g.add_node(ID,NAME=name,VERGE=isEdge,Clients=[],Buses={})
 	for nei in neighbors:
 	    tup = (ID,nei)
-	    g.add_edge(ID,nei,distance=dist[tup],traffic=trff[tup])
+	    g.add_edge(ID,nei,distance=dist[tup],speed=trff[tup])
 
     fin.close()
     return g
@@ -58,6 +58,12 @@ def readTraffic(filename):
     fin.close()
     return traffic
 
-
-
+def readIntervals(filename):
+    fin = file(filename,'r')
+    interval = {}
+    for line in fin.readlines():
+	pair = [int(p) for p in line.split()]
+	interval[pair[0]] = pair[1]
+    fin.close()
+    return interval
 

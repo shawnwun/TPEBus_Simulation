@@ -21,10 +21,17 @@ Bus Manager:
 
 Bus Class:
     Data ---------------------------------
+    BusID:	(route, number)
     路線圖:	node list read from data
-    現在位置:	[出發node, 開往node, 距離]
     clients:	a list of Client obj 
     Life time:	start from 0, every iteration +1
+    
+    MetaData:	{'from': 
+		 'to':
+		 'at':
+		 'dist':
+		 'speed':}    
+
     --------------------------------------
     Behavior:	遇到起點直接消失，遇到終點返路線
 		到每個 node, 呼叫每個 client 滾蛋下車
