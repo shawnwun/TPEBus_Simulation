@@ -4,7 +4,7 @@ from random import randrange
 class LocationType
     NODE, BUS = range(2)
 
-class ClientManager
+class ClientManager:
     # Constructor
     def __init__(self, TPEMap, scoreTable, bManager): 
 	self._map = TPEMap
@@ -29,7 +29,7 @@ class ClientManager
     def numOfClients(self):
         return len(self._clients)
 
-class Client
+class Client:
     # Constructor
     def __init__(self, id, location, destination, bManager):
 	self._id = id
@@ -48,5 +48,4 @@ class Client
     
     def getOff(self, graph, stop)
         self._location = stop
-
 

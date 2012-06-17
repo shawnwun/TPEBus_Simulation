@@ -3,8 +3,8 @@ import os
 import operator
 from util import *
 import networkx as nx
-import Bus
-import Client
+from Bus import *
+from Client import *
 
 # Usage: python src/simulation.py TPMap_nodes.txt TPMap_edges.txt TPMap_traffic.txt TPERoute.txt TPEInterval.txt iteration
 
@@ -24,11 +24,12 @@ bManager = BusManager(TPEMap, scoreTable, route, interval)
 cManager = ClientManager(TPEMap, scoreTable, bManager)
 
 # Start iteration
-for i in iteration:
-    bManager.notifyAllBusesMove()
-    bManager.newAllBuses()
-    cManager.newAllClients()
-    cManager.notifyAllClientsMove()
+for i in range(iteration):
+    print 'iteration %d, # of bus %d, # of client %d' % (i, bManager.numOfBuses(),cManager.numOfClients())
+    bManager.notifyAllBusesMove(TPEMap)
+    bManager.newAllBuses(TPEMap)
+    #cManager.newAllClients()
+    #cManager.notifyAllClientsMove()
     
     bManager.countDown()
 

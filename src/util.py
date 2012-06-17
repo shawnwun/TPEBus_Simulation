@@ -24,7 +24,7 @@ def constructMap(nodefile,edgefile,trfffile):
 	
 	g.add_node(ID,NAME=name,VERGE=isEdge,Clients=[],Buses={})
 	for nei in neighbors:
-	    tup = (ID,nei)
+	    tup = tuple(sorted([ID,nei]))
 	    g.add_edge(ID,nei,distance=dist[tup],speed=trff[tup])
 
     fin.close()
