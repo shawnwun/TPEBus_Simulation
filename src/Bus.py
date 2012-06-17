@@ -24,7 +24,7 @@ class BusManager
     def notifyAllBusesMove(self, graph):
 	for busID in self._buses.keys():
 	    buses = self._buses[busID]
-	    for bus in buses.values():
+	    for bus in buses.values():	
 		# Check is parked or not, if is parked, pop it out	
 		isParked, stop = bus.isParked()
 		if isParked:
@@ -38,10 +38,12 @@ class BusManager
 		    metadata = {'from':stop,'to':to, 'at':0 \
 			    'dist':dist, 'speed':speed }
 		    self.updateMetadata(metadata)
-		    buses.park(graph,stop)
-		    
+		    bus.park(graph,stop)
+		    bus.getOff(graph,stop)
+ 
 		elif status==-1: # round trip finish, dead
 		    
+
 
     def newAllBuses(self, graph):
 	for busID in self._buses.keys():
@@ -119,5 +121,7 @@ class Bus:
     def isParked(self):
 	return isParked, self._metadata['from']
 
-
+    def clientGetOff(self,stop):
+	for c in self._clients():
+	    c.getOff(graph,stop)
 
