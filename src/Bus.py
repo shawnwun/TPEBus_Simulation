@@ -33,9 +33,9 @@ class BusManager:
     def notifyAllBusesMove(self, graph):
 	for busID in self._buses.keys():
 	    
-	    for i in range(len(self._buses[busID].values())):	
+	    for num in self._buses[busID].keys():	
 		# Check is parked or not, if is parked, pop it out	
-		bus = self._buses[busID].values()[i]
+		bus = self._buses[busID][num]
 		isParked, stop = bus.isParked()
 		if isParked:
 		    bus.depark(graph,stop)
@@ -53,10 +53,11 @@ class BusManager:
 		elif status==-1: # round trip finish, dead    
 		    bus.clientGetOff(graph,stop) 
 		    self._score[bus.identifier()] = bus.getDistance()
-		    del self._buses[busID].values()[i]
-		    if busID==14:
-			print self._buses[busID]
-
+		    del self._buses[busID][num]
+		    #if busID==14:
+		    #	print self._buses[busID]
+			#print bus._metadata
+    
     def newAllBuses(self, graph):
 	for busID in self._buses.keys():
 	    # if count down == bus interval, generate
