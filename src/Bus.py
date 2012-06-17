@@ -125,3 +125,7 @@ class Bus:
 	for c in self._clients():
 	    c.getOff(graph,stop)
 
+    def clientGetOn(self,client):
+	self._clients.append(client)
+
+
