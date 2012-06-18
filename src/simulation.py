@@ -37,5 +37,5 @@ for i in range(iteration):
     cManager.countDown()
 
 # Output Results
-print scoreTable
+# print scoreTable
 

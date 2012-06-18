@@ -9,13 +9,14 @@ class ClientManager:
         self._clients = {}
         self._count = 0
 
-    def newAllClients(self, numOfClient, graph):
+    def newAllClients(self, graph, numOfClient):
         for i in range(numOfClient):
+            start = randrange(1, self._map.number_of_nodes() + 1)
+            end = start
+            while end == start:
+                end = randrange(1, self._map.number_of_nodes() + 1)
             self._clients[self._count] = Client(
-                self._count,
-                randrange(0, self._map.number_of_nodes() ),
-                randrange(0, self._map.number_of_nodes() ),
-                graph )
+                self._count, start, end, graph)
             self._count += 1
             
     def notifyAllClientsMove(self, graph):
@@ -25,13 +26,16 @@ class ClientManager:
             if client.gotToDestination():
                 toDel.append(cID)
         for d in toDel:
-            del self._clients[cID]
-            print 'Clients #%d has arrived and has been removed' % (cID)
+            del self._clients[d]
+            print 'Clients #%d has arrived and has been removed' % (d)
 
         for cID in self._clients.keys():
             client = self._clients[cID]
             if client.isOnNode():
                 buses = graph.node[client.location()]['Buses']
+                for k in buses.keys():
+                    client.getOn(graph, buses[k])
+                    break
                 # TODO
 
     def numOfClients(self):
@@ -39,11 +43,12 @@ class ClientManager:
 
     def countDown(self):
         for cID in self._clients.keys():
-            self._clients[cID].addLifetime()
+            self._clients[cID].increaseLifetime()
+
+class LocationType:
+    NODE, BUS = range(2)
 
 class Client:
-    class LocationType:
-        NODE, BUS = range(2)
     # Constructor
     def __init__(self, id, location, destination, graph):
 	self._id = id
@@ -51,13 +56,13 @@ class Client:
 	self._locationType = LocationType.NODE
 	self._destination = destination
 	self._lifetime = 0
-        graph.node[stop]['Clients'][self._id] = self
+        graph.node[self._location]['Clients'][self._id] = self
 
     def getOn(self, graph, bus):
         bus.clientGetOn(self)
+        del graph.node[self._location]['Clients'][self._id]
         self._location = bus.identifier()
         self._locationType = LocationType.BUS
-        del graph.node[stop]['Clients'][self._id]
     
     def getOff(self, graph, stop):
         self._location = stop
@@ -67,7 +72,7 @@ class Client:
     def identifier(self):
         return self._id
 
-    def addLifetime(self):
+    def increaseLifetime(self):
         self._lifetime += 1
 
     def isOnBus(self):

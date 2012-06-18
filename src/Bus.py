@@ -165,8 +165,7 @@ class Bus:
     def clientGetOff(self,graph,stop):
 	for c in range(len(self._clients)):
 	    self._clients[c].getOff(graph,stop)
-	    del self._clients[c]
-	
+        del self._clients[:]
     def clientGetOn(self,client):
 	self._clients.append(client)
 	
