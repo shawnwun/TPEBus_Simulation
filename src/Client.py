@@ -1,51 +1,80 @@
 import networkx as nx
 from random import randrange
 
-class LocationType
-    NODE, BUS = range(2)
-
 class ClientManager:
     # Constructor
-    def __init__(self, TPEMap, scoreTable, bManager): 
-	self._map = TPEMap
-	self._table = scoreTable
-	self._clients = {}
+    def __init__(self, TPEMap, scoreTable): 
+        self._map = TPEMap
+        self._table = scoreTable
+        self._clients = {}
         self._count = 0
-        self._busManager = bManager
 
-    def newAllClients(self, numOfClient):
-	for i in range(numOfClient):
+    def newAllClients(self, numOfClient, graph):
+        for i in range(numOfClient):
             self._clients[self._count] = Client(
                 self._count,
                 randrange(0, self._map.number_of_nodes() ),
                 randrange(0, self._map.number_of_nodes() ),
-                self._busManager )
+                graph )
             self._count += 1
             
-    def notifyAllClientsMove(self):
-	for key in self._clients.keys()
-            clients[key].move()
+    def notifyAllClientsMove(self, graph):
+        toDel = []
+        for cID in self._clients.keys():
+            client = self._clients[cID]
+            if client.gotToDestination():
+                toDel.append(cID)
+        for d in toDel:
+            del self._clients[cID]
+            print 'Clients #%d has arrived and has been removed' % (cID)
+
+        for cID in self._clients.keys():
+            client = self._clients[cID]
+            if client.isOnNode():
+                # TODO
 
     def numOfClients(self):
         return len(self._clients)
 
+    def countDown(self):
+        for cID in self._clients.keys():
+            self._clients[cID].addLifetime()
+
 class Client:
+    class LocationType:
+        NODE, BUS = range(2)
     # Constructor
-    def __init__(self, id, location, destination, bManager):
+    def __init__(self, id, location, destination, graph):
 	self._id = id
 	self._location = location
-	self._location_type = LocationType.NODE
+	self._locationType = LocationType.NODE
 	self._destination = destination
 	self._lifetime = 0
-        self._busManager = bManager
-    
-    def move(self):
+        graph.node[stop]['Clients'][self._id] = self
 
-    def getOn(self, busID):
-        self._busManager._buses[busID].clientGetOn(self._id)
-        self._location = busID
-        self._location_type = LocationType.BUS
+    def getOn(self, graph, bus):
+        bus.clientGetOn(self)
+        self._location = bus.identifier()
+        self._locationType = LocationType.BUS
+        del graph.node[stop]['Clients'][self._id]
     
-    def getOff(self, graph, stop)
+    def getOff(self, graph, stop):
         self._location = stop
+        self._locationType = LocationType.NODE
+        graph.node[stop]['Clients'][self._id] = self
+
+    def identifier(self):
+        return self._id
+
+    def addLifetime(self):
+        self._lifetime += 1
+
+    def isOnBus(self):
+        return self._locationType == LocationType.BUS
+
+    def isOnNode(self):
+        return self._locationType == LocationType.NODE
+
+    def gotToDestination(self)
+        return self.isOnNode() and self._location == self._destination
 
