@@ -8,6 +8,8 @@ class ClientManager:
         self._table = scoreTable
         self._clients = {}
         self._count = 0
+        self._numOfArrived = 0
+        self._totalCost = 0
 
     def newAllClients(self, graph, numOfClient):
         for i in range(numOfClient):
@@ -20,15 +22,6 @@ class ClientManager:
             self._count += 1
             
     def notifyAllClientsMove(self, graph):
-        toDel = []
-        for cID in self._clients.keys():
-            client = self._clients[cID]
-            if client.gotToDestination():
-                toDel.append(cID)
-        for d in toDel:
-            del self._clients[d]
-            print 'Clients #%d has arrived and has been removed' % (d)
-
         for cID in self._clients.keys():
             client = self._clients[cID]
             if client.isOnNode():
@@ -38,12 +31,30 @@ class ClientManager:
                     break
                 # TODO
 
+    def clearClients(self):
+        toDel = []
+        for cID in self._clients.keys():
+            client = self._clients[cID]
+            if client.gotToDestination():
+                toDel.append(cID)
+        for d in toDel:
+            self._totalCost += self._clients[d].lifetime()
+            del self._clients[d]
+            self._numOfArrived += 1
+            print 'Clients #%d has arrived and has been removed' % (d)
+
     def numOfClients(self):
         return len(self._clients)
 
     def countDown(self):
         for cID in self._clients.keys():
             self._clients[cID].increaseLifetime()
+
+    def numOfArrived(self):
+        return self._numOfArrived
+
+    def averageTimeCost(self):
+        return self._totalCost / self.numOfArrived()
 
 class LocationType:
     NODE, BUS = range(2)
@@ -86,4 +97,7 @@ class Client:
 
     def location(self):
         return self._location
+
+    def lifetime(self):
+        return self._lifetime
 

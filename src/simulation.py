@@ -29,13 +29,16 @@ cManager = ClientManager(TPEMap, scoreTable)
 # Start iteration
 for i in range(iteration):
     print 'iteration %d, # of bus %d, # of client %d' % (i, bManager.numOfBuses(),cManager.numOfClients())
-    bManager.notifyAllBusesMove(TPEMap)
     bManager.newAllBuses(TPEMap)
     cManager.newAllClients(TPEMap, randrange(0, NumOfClientsPerMinute))
     cManager.notifyAllClientsMove(TPEMap)
+    bManager.notifyAllBusesMove(TPEMap)
+    cManager.clearClients()
     bManager.countDown()
     cManager.countDown()
 
 # Output Results
 # print scoreTable
+print '# of clients arrived: %d' % (cManager.numOfArrived())
+print 'Average time cost: %d' % (cManager.averageTimeCost())
 
