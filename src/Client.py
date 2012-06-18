@@ -31,6 +31,7 @@ class ClientManager:
         for cID in self._clients.keys():
             client = self._clients[cID]
             if client.isOnNode():
+                buses = graph.node[client.location()]['Buses']
                 # TODO
 
     def numOfClients(self):
@@ -75,6 +76,9 @@ class Client:
     def isOnNode(self):
         return self._locationType == LocationType.NODE
 
-    def gotToDestination(self)
+    def gotToDestination(self):
         return self.isOnNode() and self._location == self._destination
+
+    def location(self):
+        return self._location
 
