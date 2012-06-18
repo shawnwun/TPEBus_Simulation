@@ -1,4 +1,4 @@
-每個 iteration 一分鐘
+﻿每個 iteration 一分鐘
 * 選路線忽略轉車
 
 Map: Graph
@@ -7,17 +7,18 @@ Map: Graph
 Node:
     Clients queue
     Bus queue
-    路線表:  對任意一個點根據一個 bus configuration 的 cost
+    路線表:  對任意一個點根據一個 bus configuration 的 cost (間隔站的數量)
 
 Client Manager:
     Need to configure
     處理 client 的誕生
+    client 的起點、終點、搭車的時間、到達目的地的時間
 
 Bus Manager:
     Data ---------------------------------
     所有公車路線:   a bunch of list of nodes
-    每個公車路線的班距:	iteration
-
+    每個公車路線的班距:	iteration （出發時加上隨機亂數）
+    公車的資源消耗
 
 Bus Class:
     Data ---------------------------------

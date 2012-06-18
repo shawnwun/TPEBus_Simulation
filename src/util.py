@@ -22,7 +22,7 @@ def constructMap(nodefile,edgefile,trfffile):
 	    isEdge = True
 	neighbors = [int(n) for n in tokens[-1].split(';')]
 	
-	g.add_node(ID,NAME=name,VERGE=isEdge,Clients=[],Buses={})
+	g.add_node(ID,NAME=name,VERGE=isEdge,Clients={},Buses={})
 	for nei in neighbors:
 	    tup = tuple(sorted([ID,nei]))
 	    g.add_edge(ID,nei,distance=dist[tup],speed=trff[tup])

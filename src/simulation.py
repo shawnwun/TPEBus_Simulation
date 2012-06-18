@@ -5,8 +5,11 @@ from util import *
 import networkx as nx
 from Bus import *
 from Client import *
+from random import randrange
 
 # Usage: python src/simulation.py TPMap_nodes.txt TPMap_edges.txt TPMap_traffic.txt TPERoute.txt TPEInterval.txt iteration
+
+NumOfClientsPerMinute = 10
 
 # Build Map
 TPEMap = constructMap(sys.argv[1],sys.argv[2],sys.argv[3])
@@ -28,10 +31,10 @@ for i in range(iteration):
     print 'iteration %d, # of bus %d, # of client %d' % (i, bManager.numOfBuses(),cManager.numOfClients())
     bManager.notifyAllBusesMove(TPEMap)
     bManager.newAllBuses(TPEMap)
-    #cManager.newAllClients()
-    #cManager.notifyAllClientsMove()
-    
+    cManager.newAllClients(TPEMap, randrange(0, NumOfClientsPerMinute))
+    cManager.notifyAllClientsMove(TPEMap)
     bManager.countDown()
+    cManager.countDown()
 
 # Output Results
 print scoreTable
