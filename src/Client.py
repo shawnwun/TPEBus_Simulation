@@ -9,16 +9,17 @@ class ClientManager:
         self._clients = {}
         self._count = 0
         self._numOfArrived = 0
+        self._totalDistance = 0
         self._totalCost = 0
         self._pathCost = nx.all_pairs_dijkstra_path_length(TPEMap,
             None, 'distance')
 
     def newAllClients(self, graph, numOfClient):
         for i in range(numOfClient):
-            start = randrange(1, self._map.number_of_nodes() + 1)
+            start = randrange(1, graph.number_of_nodes() + 1)
             end = start
             while end == start:
-                end = randrange(1, self._map.number_of_nodes() + 1)
+                end = randrange(1, graph.number_of_nodes() + 1)
             self._clients[self._count] = Client(
                 self._count, start, end, graph)
             self._count += 1
@@ -48,9 +49,12 @@ class ClientManager:
                 toDel.append(cID)
         for d in toDel:
             self._totalCost += self._clients[d].lifetime()
+            start = self._clients[d].startingPoint()
+            end = self._clients[d].destination()
+            self._totalDistance += self._pathCost[start][end]
             del self._clients[d]
             self._numOfArrived += 1
-            print 'Clients #%d has arrived and has been removed' % (d)
+            # print 'Clients #%d has arrived and has been removed' % (d)
 
     def numOfClients(self):
         return len(self._clients)
@@ -65,7 +69,10 @@ class ClientManager:
     def numOfArrived(self):
         return self._numOfArrived
 
-    def averageTimeCost(self):
+    def avgDistance(self):
+        return self._totalDistance / self.numOfArrived()
+
+    def avgTimeCost(self):
         return self._totalCost / self.numOfArrived()
 
 class LocationType:
@@ -75,6 +82,7 @@ class Client:
     # Constructor
     def __init__(self, id, location, destination, graph):
 	self._id = id
+        self._start = location
 	self._location = location
 	self._locationType = LocationType.NODE
 	self._destination = destination
@@ -110,6 +118,9 @@ class Client:
     def location(self):
         return self._location
 
+    def startingPoint(self):
+        return self._start
+    
     def destination(self):
         return self._destination
 
