@@ -30,7 +30,7 @@ cManager = ClientManager(TPEMap, scoreTable)
 for i in range(iteration):
     print 'iteration %d, # of bus %d, # of client %d' % (i, bManager.numOfBuses(),cManager.numOfClients())
     bManager.newAllBuses(TPEMap)
-    cManager.newAllClients(TPEMap, randrange(0, NumOfClientsPerMinute))
+    cManager.newAllClients(TPEMap, randrange(0, NumOfClientsPerMinute + 1))
     cManager.notifyAllClientsMove(TPEMap)
     bManager.notifyAllBusesMove(TPEMap)
     cManager.clearClients()
@@ -39,6 +39,7 @@ for i in range(iteration):
 
 # Output Results
 # print scoreTable
+print 'Total # of clients: %d' % (cManager.totalClientCount())
 print '# of clients arrived: %d' % (cManager.numOfArrived())
 print 'Average time cost: %d' % (cManager.averageTimeCost())
 

@@ -10,6 +10,8 @@ class ClientManager:
         self._count = 0
         self._numOfArrived = 0
         self._totalCost = 0
+        self._pathCost = nx.all_pairs_dijkstra_path_length(TPEMap,
+            None, 'distance')
 
     def newAllClients(self, graph, numOfClient):
         for i in range(numOfClient):
@@ -23,13 +25,20 @@ class ClientManager:
             
     def notifyAllClientsMove(self, graph):
         for cID in self._clients.keys():
-            client = self._clients[cID]
-            if client.isOnNode():
-                buses = graph.node[client.location()]['Buses']
+            clt = self._clients[cID]
+            if clt.isOnNode():
+                buses = graph.node[clt.location()]['Buses']
+                mindist = self._pathCost[clt.location()][clt.destination()]
+                kbest = None
                 for k in buses.keys():
-                    client.getOn(graph, buses[k])
-                    break
-                # TODO
+                    next = buses[k].nextStop()
+                    dist = self._pathCost[next][clt.destination()]
+                    if dist < mindist:
+                        mindist = dist
+                        kbest = k
+                if kbest is not None:
+                    clt.getOn(graph, buses[kbest])
+                # client policy...
 
     def clearClients(self):
         toDel = []
@@ -49,6 +58,9 @@ class ClientManager:
     def countDown(self):
         for cID in self._clients.keys():
             self._clients[cID].increaseLifetime()
+
+    def totalClientCount(self):
+        return self._count
 
     def numOfArrived(self):
         return self._numOfArrived
@@ -97,6 +109,9 @@ class Client:
 
     def location(self):
         return self._location
+
+    def destination(self):
+        return self._destination
 
     def lifetime(self):
         return self._lifetime

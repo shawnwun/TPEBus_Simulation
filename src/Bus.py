@@ -67,7 +67,8 @@ class BusManager:
 		route = self._route[busID]
 		dist = graph.edge[route[0]][route[1]]['distance']
 		speed = graph.edge[route[0]][route[1]]['speed']
-		metadata = {'from':route[0],'to':route[1], 'at':0, 'dist':dist, 'speed':speed }
+		metadata = {'from':route[0], 'to':route[1],
+                    'at':0, 'dist':dist, 'speed':speed }
 		numID = self._busesIDCnt[busID]
 		bus = Bus(numID,busID,route,metadata)
 		self._buses[busID][numID] = bus
@@ -107,6 +108,9 @@ class Bus:
     def updateMetadata(self, meta):
 	del self._metadata
 	self._metadata = meta
+
+    def nextStop(self):
+        return self._metadata['to']
 
     def increaseLifeTime(self):
 	self._lifetime += 1 
