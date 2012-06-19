@@ -11,6 +11,7 @@ class ClientManager:
         self._numOfArrived = 0
         self._totalDistance = 0
         self._totalCost = 0
+        self._totalBusTransfer = 0
         self._pathCost = nx.all_pairs_dijkstra_path_length(TPEMap,
             None, 'distance')
 
@@ -52,6 +53,7 @@ class ClientManager:
             start = self._clients[d].startingPoint()
             end = self._clients[d].destination()
             self._totalDistance += self._pathCost[start][end]
+            self._totalBusTransfer += self._clients[d].numOfBusTransfer()
             del self._clients[d]
             self._numOfArrived += 1
             # print 'Clients #%d has arrived and has been removed' % (d)
@@ -70,10 +72,13 @@ class ClientManager:
         return self._numOfArrived
 
     def avgDistance(self):
-        return self._totalDistance / self.numOfArrived()
+        return float(self._totalDistance) / self.numOfArrived()
 
     def avgTimeCost(self):
-        return self._totalCost / self.numOfArrived()
+        return float(self._totalCost) / self.numOfArrived()
+
+    def avgBusTransfer(self):
+        return float(self._totalBusTransfer) / self.numOfArrived()
 
 class LocationType:
     NODE, BUS = range(2)
@@ -87,6 +92,8 @@ class Client:
 	self._locationType = LocationType.NODE
 	self._destination = destination
 	self._lifetime = 0
+        self._busTransfer = 0
+        self._previousBus = None
         graph.node[self._location]['Clients'][self._id] = self
 
     def getOn(self, graph, bus):
@@ -94,6 +101,10 @@ class Client:
         del graph.node[self._location]['Clients'][self._id]
         self._location = bus.identifier()
         self._locationType = LocationType.BUS
+        if self._previousBus is not None:
+            if self._location != self._previousBus:
+                self._busTransfer += 1
+        self._previousBus = self._location
     
     def getOff(self, graph, stop):
         self._location = stop
@@ -123,6 +134,9 @@ class Client:
     
     def destination(self):
         return self._destination
+
+    def numOfBusTransfer(self):
+        return self._busTransfer
 
     def lifetime(self):
         return self._lifetime

@@ -41,5 +41,6 @@ for i in range(iteration):
 # print scoreTable
 print 'Total # of clients: %d' % (cManager.totalClientCount())
 print '# of clients arrived: %d' % (cManager.numOfArrived())
-print 'Average traveling distance: %d' % (cManager.avgDistance())
-print 'Average time cost: %d' % (cManager.avgTimeCost())
+print 'Average expected traveling distance: %.2f' % (cManager.avgDistance())
+print 'Average time cost: %.2f' % (cManager.avgTimeCost())
+print 'Average # of bus transfers: %.2f' % (cManager.avgBusTransfer())
