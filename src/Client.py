@@ -9,7 +9,7 @@ class ClientManager:
         self._clients = {}
         self._count = 0
 
-    def newAllClients(self, numOfClient, graph):
+    def newAllClients(self, graph, numOfClient):
         for i in range(numOfClient):
             self._clients[self._count] = Client(
                 self._count,
