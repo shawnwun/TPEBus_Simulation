@@ -9,6 +9,8 @@ class BusManager:
 	self._score = scoreTable
 	self._route = route
 	self._interval = interval
+	self._totalBus = 0;
+	self._totalDistance = 0;
 
 	busIDs = self._route.keys()
 	buses = []
@@ -23,6 +25,9 @@ class BusManager:
 
     def collectAllBusScore(self):
 	pass
+
+    def totalDistance(self):
+	return self._totalDistance
 
     def numOfBuses(self):
 	cnt = 0
@@ -53,6 +58,7 @@ class BusManager:
 		elif status==-1: # round trip finish, dead    
 		    bus.clientGetOff(graph,stop) 
 		    self._score[bus.identifier()] = bus.getDistance()
+		    self._totalDistance += bus.getDistance()
 		    del self._buses[busID][num]
 		    #if busID==14:
 		    #	print self._buses[busID]
@@ -74,7 +80,11 @@ class BusManager:
 		self._buses[busID][numID] = bus
 		bus.park(graph,route[0])
 		self._busesIDCnt[busID] += 1
+		self._totalBus += 1
 
+    def totalBuses(self):
+	return self._totalBus
+    
     def countDown(self):
 	for busID in self._countDown.keys():
 	    
