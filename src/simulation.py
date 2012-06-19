@@ -10,7 +10,7 @@ from Client import *
 
 # scenrio : 'morning', 'evening', 'offpeak'
 
-NumOfClientsPerMinute = 30
+NumOfClientsPerMinute = 10
 
 # Build Map
 TPEMap = constructMap(sys.argv[1],sys.argv[2],sys.argv[3])
@@ -28,12 +28,21 @@ scoreTable = {}
 bManager = BusManager(TPEMap, scoreTable, route, interval)
 cManager = ClientManager(TPEMap, scoreTable)
 
+sum_bus = 0.0
+itercnt = 0.0
 # Start iteration
 for i in range(iteration):
     if i%1000==0:
 	print 'iteration %d, # of bus %d, # of client %d' % (i, bManager.numOfBuses(),cManager.numOfClients())
-    bManager.newAllBuses(TPEMap)
-    cManager.newAllClients(TPEMap, NumOfClientsPerMinute, scenario)
+    
+    sum_bus += bManager.numOfBuses()
+    itercnt += 1
+   
+    if float(i)/float(iteration)<=0.95:
+	bManager.newAllBuses(TPEMap)
+    if float(i)/float(iteration)<=0.90:
+	cManager.newAllClients(TPEMap, NumOfClientsPerMinute, scenario)
+    
     cManager.notifyAllClientsMove(TPEMap)
     bManager.notifyAllBusesMove(TPEMap)
     cManager.clearClients()
@@ -42,8 +51,21 @@ for i in range(iteration):
 
 # Output Results
 # print scoreTable
-print 'Total # of clients: %d' % (cManager.totalClientCount())
-print '# of clients arrived: %d' % (cManager.numOfArrived())
-print 'Average expected traveling distance: %.2f' % (cManager.avgDistance())
-print 'Average time cost: %.2f' % (cManager.avgTimeCost())
-print 'Average # of bus transfers: %.2f' % (cManager.avgBusTransfer())
+print
+print '=========== Simulation Results =========='
+print '--- Client Statistics -------------------'
+print '| Clients Generated\t: %d' % (cManager.totalClientCount())
+print '| Clients Left on Map\t: %d' % (cManager.totalClientCount()-cManager.numOfArrived())
+print '| Completion Rate\t: %.2f %s' % (float(cManager.numOfArrived())*10000.0/float(cManager.totalClientCount())/100.0,'%')
+print '| Average Time Cost\t: %.2f min' % (cManager.avgTimeCost())
+print '| Expected Travel Dist\t: %.2f m' % (cManager.avgDistance())
+print '| Average Stop Transfer\t: %.2f' % (cManager.avgBusTransfer())
+print '---- Bus Statistics   -------------------'
+print '| Bus Generated\t\t: %d' % (bManager.totalBuses())
+print '| Average Bus on Map\t: %d' % (float(sum_bus)/float(itercnt))
+print '| Total Travel Dist.\t: %d km' % (bManager.totalDistance()/1000)
+#print '---- Overall Measure  -------------------'
+#print '| Efficiency\t\t: %.2f ' % (cManager.avgTimeCost()/bManager.totalDistance()*1000000)
+print
+
+
