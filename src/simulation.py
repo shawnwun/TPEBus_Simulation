@@ -28,7 +28,8 @@ cManager = ClientManager(TPEMap, scoreTable)
 
 # Start iteration
 for i in range(iteration):
-    print 'iteration %d, # of bus %d, # of client %d' % (i, bManager.numOfBuses(),cManager.numOfClients())
+    if i%1000==0:
+	print 'iteration %d, # of bus %d, # of client %d' % (i, bManager.numOfBuses(),cManager.numOfClients())
     bManager.newAllBuses(TPEMap)
     cManager.newAllClients(TPEMap, randrange(0, NumOfClientsPerMinute + 1))
     cManager.notifyAllClientsMove(TPEMap)
