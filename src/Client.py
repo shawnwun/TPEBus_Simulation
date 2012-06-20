@@ -1,5 +1,8 @@
 import networkx as nx
-from random import randrange
+import random
+
+# number of 'Verge' node
+V = 29
 
 class ClientManager:
     # Constructor
@@ -15,15 +18,36 @@ class ClientManager:
         self._pathCost = nx.all_pairs_dijkstra_path_length(TPEMap,
             None, 'distance')
 
-    def newAllClients(self, graph, numOfClient):
-        for i in range(numOfClient):
-            start = randrange(1, graph.number_of_nodes() + 1)
-            end = start
-            while end == start:
-                end = randrange(1, graph.number_of_nodes() + 1)
-            self._clients[self._count] = Client(
-                self._count, start, end, graph)
-            self._count += 1
+    def newAllClients(self, graph, numOfClient, scenario):
+        N = graph.number_of_nodes()
+        thresV = float(numOfClient) / N
+        thresNV = thresV
+
+        if scenario == 'morning' or scenario == 'evening':
+            thresV = float(numOfClient) * 3 / (N + 2*V)
+            thresNV = float(numOfClient) / (N + 2*V)
+
+        for n in range(1, N+1):
+            if graph.node[n]['VERGE']:
+                if random.uniform(0, 1) < thresV:
+                    end = n
+                    while end == n:
+                        end = random.randrange(1, N + 1)
+                    if scenario == 'evening':
+                        n, end = end, n
+                    self._clients[self._count] = Client(
+                        self._count, n, end, graph)
+                    self._count += 1
+            else:
+                if random.uniform(0, 1) < thresNV:
+                    end = n
+                    while end == n:
+                        end = random.randrange(1, N + 1)
+                    if scenario == 'evening':
+                        n, end = end, n
+                    self._clients[self._count] = Client(
+                        self._count, n, end, graph)
+                    self._count += 1
             
     def notifyAllClientsMove(self, graph):
         for cID in self._clients.keys():

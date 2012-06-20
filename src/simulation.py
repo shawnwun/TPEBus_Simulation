@@ -5,15 +5,17 @@ from util import *
 import networkx as nx
 from Bus import *
 from Client import *
-from random import randrange
 
-# Usage: python src/simulation.py TPMap_nodes.txt TPMap_edges.txt TPMap_traffic.txt TPERoute.txt TPEInterval.txt iteration
+# Usage: python src/simulation.py TPMap_nodes.txt TPMap_edges.txt TPMap_traffic.txt TPERoute.txt TPEInterval.txt iteration scenario
+
+# scenrio : 'morning', 'evening', 'offpeak'
 
 NumOfClientsPerMinute = 10
 
 # Build Map
 TPEMap = constructMap(sys.argv[1],sys.argv[2],sys.argv[3])
-iteration = int(sys.argv[-1])
+iteration = int(sys.argv[6])
+scenario = sys.argv[-1]
 
 # Build Bus route information
 route = readRoutes(sys.argv[4])
@@ -32,12 +34,14 @@ itercnt = 0.0
 for i in range(iteration):
     if i%1000==0:
 	print 'iteration %d, # of bus %d, # of client %d' % (i, bManager.numOfBuses(),cManager.numOfClients())
+    
     sum_bus += bManager.numOfBuses()
     itercnt += 1
+   
     if float(i)/float(iteration)<=0.95:
 	bManager.newAllBuses(TPEMap)
     if float(i)/float(iteration)<=0.90:
-	cManager.newAllClients(TPEMap, randrange(0, NumOfClientsPerMinute + 1))
+	cManager.newAllClients(TPEMap, NumOfClientsPerMinute, scenario)
     
     cManager.notifyAllClientsMove(TPEMap)
     bManager.notifyAllBusesMove(TPEMap)
