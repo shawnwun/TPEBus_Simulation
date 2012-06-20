@@ -10,7 +10,7 @@ from Client import *
 
 # scenrio : 'morning', 'evening', 'offpeak'
 
-NumOfClientsPerMinute = 10
+NumOfClientsPerMinute = 100
 
 # Build Map
 TPEMap = constructMap(sys.argv[1],sys.argv[2],sys.argv[3])
@@ -61,9 +61,13 @@ print '| Average Time Cost\t: %.2f min' % (cManager.avgTimeCost())
 print '| Expected Travel Dist\t: %.2f m' % (cManager.avgDistance())
 print '| Average Stop Transfer\t: %.2f' % (cManager.avgBusTransfer())
 print '---- Bus Statistics   -------------------'
+print '| Edge Cover Rate\t: %.2f %s' % (bManager.coverRate(),'%')
+print '| Edge Repeat Rate\t: %.2f %s' % (bManager.repeatRate(),'%')
 print '| Bus Generated\t\t: %d' % (bManager.totalBuses())
 print '| Average Bus on Map\t: %d' % (float(sum_bus)/float(itercnt))
 print '| Total Travel Dist.\t: %d km' % (bManager.totalDistance()/1000)
+print '| Average Capacity\t: %.2f' % (bManager.avgCapacity())
+
 #print '---- Overall Measure  -------------------'
 #print '| Efficiency\t\t: %.2f ' % (cManager.avgTimeCost()/bManager.totalDistance()*1000000)
 print

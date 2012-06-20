@@ -1,5 +1,6 @@
 import networkx as nx
 import sys
+import operator
 
 class BusManager:
     
@@ -8,10 +9,22 @@ class BusManager:
 	self._map = TPEMap
 	self._score = scoreTable
 	self._route = route
+	self._routeCarryCapacity = {}
+	self._routeCarryCnt = {}
 	self._interval = interval
 	self._totalBus = 0;
 	self._totalDistance = 0;
-
+	self._edgeCover = {}
+	for edge in TPEMap.edges():
+	    self._edgeCover[edge] = 0
+	for route in self._route.values():
+	    for i in range(len(route)-1):
+		edge = tuple(sorted([route[i],route[i+1]]))
+		self._edgeCover[edge] += 1	
+	for key in self._route.keys():
+	    self._routeCarryCapacity[key] = 0
+	    self._routeCarryCnt[key] = 0
+    
 	busIDs = self._route.keys()
 	buses = []
 	busesCnt = []
@@ -22,6 +35,20 @@ class BusManager:
 	self._buses = dict(zip(busIDs,buses))
 	self._busesIDCnt = dict(zip(busIDs,busesCnt))
 	self._countDown = dict(zip(busIDs,self._interval.values()))
+
+    def coverRate(self):
+	cover = 0
+	for key in self._edgeCover.keys():
+	    if self._edgeCover[key]!=0:
+		cover += 1
+	return 100*float(cover)/float(len(self._edgeCover))
+    
+    def repeatRate(self):
+	repeat = 0
+	for key in self._edgeCover.keys():
+	    if self._edgeCover>0:
+		repeat += (self._edgeCover[key]-1)
+	return 100*float(repeat)/float(len(self._edgeCover))
 
     def collectAllBusScore(self):
 	pass
@@ -53,12 +80,20 @@ class BusManager:
 		    metadata = {'from':stop, 'to':to, 'at':0, 'dist':dist, 'speed':speed }
 		    bus.updateMetadata(metadata)
 		    bus.park(graph,stop)
-		    bus.clientGetOff(graph,stop)
- 
+		    
+		    self._routeCarryCapacity[busID] += bus.numOfClients()
+		    self._routeCarryCnt[busID] += 1
+
+		    bus.clientGetOff(graph,stop) 
+
 		elif status==-1: # round trip finish, dead    
 		    bus.clientGetOff(graph,stop) 
 		    self._score[bus.identifier()] = bus.getDistance()
 		    self._totalDistance += bus.getDistance()
+		    
+		    self._routeCarryCapacity[busID] += bus.numOfClients()
+		    self._routeCarryCnt[busID] += 1
+		    
 		    del self._buses[busID][num]
 		    #if busID==14:
 		    #	print self._buses[busID]
@@ -84,7 +119,15 @@ class BusManager:
 
     def totalBuses(self):
 	return self._totalBus
-    
+   
+    def avgCapacity(self):
+	cnt = 0.0
+	capacity = 0.0
+	for key in self._routeCarryCapacity.keys():
+	    capacity += float(self._routeCarryCapacity[key])/float(self._routeCarryCnt[key])
+	    cnt += 1.0
+	return capacity/cnt
+
     def countDown(self):
 	for busID in self._countDown.keys():
 	    
@@ -189,5 +232,6 @@ class Bus:
     def getDistance(self):
 	return self._distance
 
-
+    def numOfClients(self):
+	return len(self._clients)
 
