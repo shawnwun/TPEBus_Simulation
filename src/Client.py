@@ -6,7 +6,7 @@ V = 29
 
 class ClientManager:
     # Constructor
-    def __init__(self, TPEMap, scoreTable): 
+    def __init__(self, TPEMap, busmap, scoreTable): 
         self._map = TPEMap
         self._table = scoreTable
         self._clients = {}
@@ -15,7 +15,7 @@ class ClientManager:
         self._totalDistance = 0
         self._totalCost = 0
         self._totalBusTransfer = 0
-        self._pathCost = nx.all_pairs_dijkstra_path_length(TPEMap,
+        self._pathCost = nx.all_pairs_dijkstra_path_length(busmap,
             None, 'distance')
 
     def newAllClients(self, graph, numOfClient, scenario):

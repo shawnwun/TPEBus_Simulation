@@ -12,21 +12,23 @@ from Client import *
 
 NumOfClientsPerMinute = 10
 
-# Build Map
-TPEMap = constructMap(sys.argv[1],sys.argv[2],sys.argv[3])
-iteration = int(sys.argv[6])
-scenario = sys.argv[-1]
-
 # Build Bus route information
 route = readRoutes(sys.argv[4])
 interval = readIntervals(sys.argv[5])
+
+# Build Map
+TPEMap, RouteMap = constructMap(sys.argv[1],sys.argv[2],sys.argv[3],route)
+
+iteration = int(sys.argv[6])
+scenario = sys.argv[-1]
+
 
 # Table to record the cost
 scoreTable = {}
 
 # Initialize Manager, configure it with map and table
 bManager = BusManager(TPEMap, scoreTable, route, interval)
-cManager = ClientManager(TPEMap, scoreTable)
+cManager = ClientManager(TPEMap, RouteMap, scoreTable)
 
 sum_bus = 0.0
 itercnt = 0.0
