@@ -18,11 +18,36 @@ class ClientManager:
         self._pathCost = nx.all_pairs_dijkstra_path_length(busmap,
             None, 'distance')
 
-    def newAllClients(self, graph, numOfClient, scenario):
+    def newAllClients(self, graph, mean, sd, scenario):
         N = graph.number_of_nodes()
+
+        for n in range(1, N+1):
+            noClients = int(random.gauss(mean, sd))
+            if noClients < 0:
+                noClients = 0
+            q = ( scenario == 'morning' or scenario == 'evening' )
+            if graph.node[n]['VERGE'] and q:
+                noClients *= 3
+                for i in range(noClients):
+                    end = n
+                    while end == n:
+                        end = random.randrange(1, N+1)
+                    if scenario == 'evening':
+                        n, end = end, n
+                    self.addClient(n, end, graph)
+            else:
+                for i in range(noClients):
+                    end = n
+                    while end == n:
+                        end = random.randrange(1, N+1)
+                    if scenario == 'evening':
+                        n, end = end, n
+                    self.addClient(n, end, graph)
+
+
+        """
         thresV = float(numOfClient) / N
         thresNV = thresV
-
         if scenario == 'morning' or scenario == 'evening':
             thresV = float(numOfClient) * 3 / (N + 2*V)
             thresNV = float(numOfClient) / (N + 2*V)
@@ -60,7 +85,8 @@ class ClientManager:
                     if scenario == 'evening':
                         n, end = end, n
                     self.addClient(n, end, graph)
-    
+        """
+
     def addClient(self, start, end, graph):
         self._clients[self._count] = Client(self._count, start, end, graph)
         self._count += 1

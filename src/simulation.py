@@ -10,7 +10,8 @@ from Client import *
 
 # scenrio : 'morning', 'evening', 'offpeak'
 
-NumOfClientsPerMinute = 50
+MeanClients = 5
+SDClients = 5
 
 # Build Bus route information
 route = readRoutes(sys.argv[4])
@@ -43,7 +44,7 @@ for i in range(iteration):
     if float(i)/float(iteration)<=0.95:
 	bManager.newAllBuses(TPEMap)
     if float(i)/float(iteration)<=0.90:
-	cManager.newAllClients(TPEMap, NumOfClientsPerMinute, scenario)
+	cManager.newAllClients(TPEMap, MeanClients, SDClients, scenario)
     
     cManager.notifyAllClientsMove(TPEMap)
     bManager.notifyAllBusesMove(TPEMap)
