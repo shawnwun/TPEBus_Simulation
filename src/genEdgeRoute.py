@@ -12,7 +12,7 @@ for line in fin.readlines():
     cnt +=1
     pair = ';'.join(line.split()[0:2])
     froute.write(str(cnt)+' '+pair+'\n')
-    finter.write(str(cnt)+' 5'+'\n')
+    finter.write(str(cnt)+' 10'+'\n')
 
 froute.close()
 finter.close()
