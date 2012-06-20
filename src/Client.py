@@ -22,28 +22,31 @@ class ClientManager:
         N = graph.number_of_nodes()
 
         for n in range(1, N+1):
-            noClients = int(random.gauss(mean, sd))
+            q = ( scenario == 'morning' or scenario == 'evening' )
+            xmean = mean
+	    if graph.node[n]['VERGE'] and q:
+		xmean = mean * 3
+	    noClients = int(random.gauss(xmean, sd))
             if noClients < 0:
                 noClients = 0
-            q = ( scenario == 'morning' or scenario == 'evening' )
-            if graph.node[n]['VERGE'] and q:
-                noClients *= 3
-                for i in range(noClients):
-                    end = n
-                    while end == n:
+            
+	    for i in range(noClients):
+		end = n
+                while end == n:
+                    end = random.randrange(1, N+1)
+                if scenario == 'evening':
+                    n, end = end, n
+                self.addClient(n, end, graph)
+            """
+	    else:
+		for i in range(noClients):
+		    end = n
+		    while end == n:
                         end = random.randrange(1, N+1)
                     if scenario == 'evening':
                         n, end = end, n
                     self.addClient(n, end, graph)
-            else:
-                for i in range(noClients):
-                    end = n
-                    while end == n:
-                        end = random.randrange(1, N+1)
-                    if scenario == 'evening':
-                        n, end = end, n
-                    self.addClient(n, end, graph)
-
+	    """
 
         """
         thresV = float(numOfClient) / N
