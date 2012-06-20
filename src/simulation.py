@@ -10,7 +10,7 @@ from Client import *
 
 # scenrio : 'morning', 'evening', 'offpeak'
 
-NumOfClientsPerMinute = 50
+NumOfClientsPerMinute = 100
 
 # Build Bus route information
 route = readRoutes(sys.argv[4])
