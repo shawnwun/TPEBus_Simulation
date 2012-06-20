@@ -6,7 +6,7 @@ V = 29
 
 class ClientManager:
     # Constructor
-    def __init__(self, TPEMap, scoreTable): 
+    def __init__(self, TPEMap, busmap, scoreTable): 
         self._map = TPEMap
         self._table = scoreTable
         self._clients = {}
@@ -15,7 +15,7 @@ class ClientManager:
         self._totalDistance = 0
         self._totalCost = 0
         self._totalBusTransfer = 0
-        self._pathCost = nx.all_pairs_dijkstra_path_length(TPEMap,
+        self._pathCost = nx.all_pairs_dijkstra_path_length(busmap,
             None, 'distance')
 
     def newAllClients(self, graph, numOfClient, scenario):
@@ -29,26 +29,42 @@ class ClientManager:
 
         for n in range(1, N+1):
             if graph.node[n]['VERGE']:
-                if random.uniform(0, 1) < thresV:
+                f_thresV = int(thresV)
+                for i in range(f_thresV):
                     end = n
                     while end == n:
                         end = random.randrange(1, N + 1)
                     if scenario == 'evening':
                         n, end = end, n
-                    self._clients[self._count] = Client(
-                        self._count, n, end, graph)
-                    self._count += 1
+                    self.addClient(n, end, graph)
+                if random.uniform(0, 1) < thresV - f_thresV:
+                    end = n
+                    while end == n:
+                        end = random.randrange(1, N + 1)
+                    if scenario == 'evening':
+                        n, end = end, n
+                    self.addClient(n, end, graph)
             else:
-                if random.uniform(0, 1) < thresNV:
+                f_thresNV = int(thresNV)
+                for i in range(f_thresNV):
                     end = n
                     while end == n:
                         end = random.randrange(1, N + 1)
                     if scenario == 'evening':
                         n, end = end, n
-                    self._clients[self._count] = Client(
-                        self._count, n, end, graph)
-                    self._count += 1
-            
+                    self.addClient(n, end, graph)
+                if random.uniform(0, 1) < thresNV - f_thresNV:
+                    end = n
+                    while end == n:
+                        end = random.randrange(1, N + 1)
+                    if scenario == 'evening':
+                        n, end = end, n
+                    self.addClient(n, end, graph)
+    
+    def addClient(self, start, end, graph):
+        self._clients[self._count] = Client(self._count, start, end, graph)
+        self._count += 1
+
     def notifyAllClientsMove(self, graph):
         for cID in self._clients.keys():
             clt = self._clients[cID]

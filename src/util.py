@@ -4,7 +4,7 @@ import operator
 import networkx as nx
 
 
-def constructMap(nodefile,edgefile,trfffile):
+def constructMap(nodefile, edgefile, trfffile, route):
 
     dist = readDistance(edgefile)
     trff = readTraffic(trfffile)
@@ -27,8 +27,16 @@ def constructMap(nodefile,edgefile,trfffile):
 	    tup = tuple(sorted([ID,nei]))
 	    g.add_edge(ID,nei,distance=dist[tup],speed=trff[tup]*1000/60)
 
+    busmap = nx.Graph()
+    busmap.add_nodes_from(g)
+    for routeID in route.keys():
+        nlist = route[routeID]
+        for i in range(len(nlist) - 1):
+            busmap.add_edge(nlist[i], nlist[i+1],
+                distance = g[nlist[i]][nlist[i+1]]['distance'])
+
     fin.close()
-    return g
+    return g, busmap
 
 
 def readRoutes(filename):
