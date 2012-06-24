@@ -1,4 +1,8 @@
 \documentclass{sig-alternate}
+
+\usepackage{epsfig}
+\usepackage{subfigure}
+
 \makeatletter
 \def\@copyrightspace{\relax}
 \makeatother
@@ -57,14 +61,103 @@ The purpose of this project is to set up a simulation of behaviors of buses and 
 \section{Data collection}
 For our real-case simulation, we transform a map of part of Taipei City into a graph with roads as edges and intersections as nodes.
 We need distances between each two nodes, current traffic information, stops of the bus routes and time intervals of the buses.
+They are all available but are hard to fetch automatically.
 To get these data, we have used the most powerful parser in the world!
-We use hand coding
+We collect the road conditions from Google Map and the bus information from the website of Taipei Public Transportation Office manually.
+
+We select an area of Taipei City as in Figure~\ref{fig:tpemap}.
+We transform it into a graph as in Figure~\ref{fig:graphex}, where edges represent the roads in the area and nodes represent the intersection of the roads.
+On the graph, we add the information of roads as in Figures~\ref{fig:node} and~\ref{fig:edge}.
+We record the bus routes and intervals as in Figures~\ref{fig:bus}.
+
+\begin{figure}
+\centering
+\includegraphics[height=2.5in, width=3.1in]{taipeimap.eps}
+\caption{The framed area is transformed into the graph shown in Figure~\ref{fig:graphex}.}
+\label{fig:tpemap}
+\end{figure}
+
+\begin{figure}
+\centering
+\includegraphics[height=2.2in, width=3.1in]{graphexample.eps}
+\caption{In this graph, edges represent the roads and nodes represent the intersections.}
+\label{fig:graphex}
+\end{figure}
+
+\begin{figure}
+\centering
+\includegraphics[height=2.4in, width=3.1in]{node.eps}
+\caption{Part of the node information (totally 74 nodes). The entries for each node are its ID number, its name, its number of adjacent nodes, whether this node is on the verge, and its adjacent nodes.}
+\label{fig:node}
+\end{figure}
+
+\begin{figure}
+\centering
+\subfigure[]{
+\includegraphics[height=1.5in, width=1.2in]{edge.eps}
+\label{subfig:edge}
+}
+\subfigure[]{
+\includegraphics[height=1.5in, width=1.2in]{traffic.eps}
+\label{subfig:traffic}
+}
+\caption{Figure~\ref{subfig:edge} is part of the edge information (totally 134 edges), where the entries for each edge are its two ends, the two ends' names, and the distance between the two ends; Figure~\ref{subfig:traffic} is part of the traffic conditions, where the
+number in the last entry is the speed buses can drive at on the corresponding edge.}
+\label{fig:edge}
+\end{figure}
+
+\begin{figure}
+\centering
+\subfigure[]{
+\includegraphics[height=1.6in, width=1.5in]{bus.eps}
+\label{subfig:route}
+}
+\subfigure[]{
+\includegraphics[height=1.6in, width=0.3in]{interval.eps}
+\label{subfig:interval}
+}
+\caption{Figure~\ref{subfig:route} is part of the bus route information (totally 124 routes), where the entries for each bus are its route number and the stops (in the selected area) on its route; Figure~\ref{subfig:interval} is part of the bus interval information, where the
+number in the second entry is the departure interval of the corresponding route.}
+\label{fig:bus}
+\end{figure}
 
 \section{Agents}
 \subsection{Buses}
 \subsection{Clients}
+Client agents are generated on nodes with a randomly chosen destination.
+The number of clients generated depends on the type of scenario.
+In the next section, we have a more detailed explanation about this.
+
+In order to reduce the computational cost, we use a simple greedy algorithm to model the behavior of a client.
+If a client is at a bus stop, it first compares all the buses stopping at this bus stop.
+The client choose a bus the next stop of which is the closest to the destination.
+If this bus can take it to a node which is closer to its destination than its current location, it gets on this chosen bus.
+Otherwise, the client wait for another minute at the stop.
+Indeed, it is not intuitive for us.
+This modelling method has much room for improvement.
 
 \section{Simulation}
+In this section, we first introduce the environment settings of our simulation.
+Three scenarios and different policies of bus agents are taken into consideration.
+After that, we present the experimental results of the different environment settings.
+
+\subsection{Environment Settings}
+In our simulations, we set one minute as the basic unit of time.
+The virtual buses and clients take actions at every minute.
+We run 10000 units of time for each type of settings to get stable results.
+
+We use three types of scenarios --- off-peak time, morning rush hours and evening rush hours.
+For instance, during the morning rush hours, many clients could travel from the suburb to downtown Taipei.
+That is, a client is more possible to move from the nodes on the verge of the selected area to the node inside the area.
+Therefore, we set the three scenarios in the following way.
+In the off-peak scenario, we generate clients form every node at every minute.
+The number of clients to generate is sampled from a Gaussian distribution with a mean of 1.2 and a standard deviation of 0.5.
+In the morning-rush-hour scenario, the number of clients to generate at the side nodes is increased --- sampled from from a Gaussian distribution with a mean of 3.6 and a standard deviation of 0.5.
+In the evening-rush-hour scenario, this modification is operated on the inner nodes.
+Once a client is generated, it randomly choose another node as its destination.
+
+\subsection{Policies of Bus Agents}
+\subsection{Results}
 
 \section{Conclusion}
 
