@@ -173,11 +173,15 @@ Last but not least, the experiment results, analysis, and discussion regarding t
 
 \subsection{Environment Settings}
 In our simulations, each iteration in the simulated world is one minute in the real world. We use a small time span for each iteration to mimic the continuous real environment dynamics as like as possible.
+Three bus policies are take into consideration:
+\begin{description}
+\item[Original:] The current bus routes in operation in which the data is collected manually from internet.
+\item[Chessboard:] The main policy that we want to compared with. A chessboard-like bus route configuration.
+\item[All-pair:] A funny example we do in our experiments. We have a bus for each of the edges in the map. Each bus is only run on the give edge.
+\end{description}
 The virtual buses and clients take actions alternately at every minute/iteration.
 We run 10000 minutes/iterations for every three real world scenarios and three different bus policy configurations.
-
 We use three types of scenarios, they are: 
-
 \begin{description}
 \item [Off-peak time:] Under this scenario, the flow of people are assumed to be under the assumption of random walk theorem, the average flow of people from node to node is zero. In this case, the number of clients generating from a particular node $i$ is draw from a Gaussian distribution $N_{i}^{(o)} \sim Gauss(\mu^{(o)},\sigma^{(o)})$ with mean $\mu^{(o)}$ equal to 1.2 and variance $\sigma^{(o)}$ equal to 0.5.
 \item [Morning rush hours:] This scenario tries to model the rush hours during each morning where people comes from the outskirts of the city. The only difference between it and the off-peak time is that the number of client generated from the verge node $v$ is draw from a Gaussian distribution $N_{v}^{(m)} \sim Gauss(\mu^{(m)},\sigma^{(m)})$ with mean $\mu^{(m)}$ equal to three times of other nodes 3.6.
@@ -185,9 +189,54 @@ We use three types of scenarios, they are:
 \end{description} 
 
 \subsection{Results}
-Fig.~\ref{} show our experimental results under three different bus policies when the bus policy is greedy
 
+\begin{figure}
+\centering
+\includegraphics[height=2.5in, width=3.1in]{result1.eps}
+\caption{Simulation under off-line scenario.}
+\label{fig:exp1}
+\end{figure}
+
+\begin{figure}
+\centering
+\includegraphics[height=2.5in, width=3.1in]{result2.eps}
+\caption{Simulation under morning rush hour scenario.}
+\label{fig:exp2}
+\end{figure}
+
+\begin{figure}
+\centering
+\includegraphics[height=2.5in, width=3.1in]{result3.eps}
+\caption{Simulation under evening rush hour scenario.}
+\label{fig:exp3}
+\end{figure}
+
+
+Fig.~\ref{fig:exp1}, Fig.~\ref{fig:exp2}, and Fig.~\ref{fig:exp3} shows our simulation result under three different bus policies when the scenario is off-peak, morning rush hour, evening rush hour respectively.
+
+The client generated in three different scenarios are different since the gaussian mean is three times the number of Off-peak in verge nodes of Morning rush hour and Evening rush hour.
+If we only look into the off-peak result in Fig.~\ref{fig:exp1}, you will discover that in client statistics, it is important to note that the average time cost is better for Original and Chessboard policy compared to All-pair policy but the Original and Chessboard is not so different. 
+However, in average stop transfer, the Chessboard policy exhibits a better performance than the Original policy.
+In bus statistics, the benefit of chessboard is very clear. 
+The edge repeat rate is only 11.19\% compare to the extremely overlapped Original policy's 649.25\%.
+The average bus left on the map is 36 for chessboard compared to 184 of original policy.
+For the total travel distance, the chessboard is less thus save more energy compared to the original one.
+And finally, for the average client capacity, the sparse capacity of original policy suggested that its overlapped nature makes the routes compete together and thus lower the overall efficiency of the system.
+For Fig.~\ref{fig:exp2} and Fig.~\ref{fig:exp3}, the results shown also confirm to the Fig.~\ref{fig:exp1} result. 
 
 \section{Conclusion}
+We have discussed a problem about inefficient resource utilization of bus routes in Taipei city. 
+Traditionally, the bus routes in Taipei city is full of detours, which makes the expected arrived time is far greater for a particular bus route. 
+It also contains a lot of overlapped edges, which not only increase the number of buses need to be invested by the government and the bus companies but also decrease the utilization rate (average number of passengers) of a bus.
+These are all indicators of the inefficiency resource utilization of real world.
+
+With our model which cast the real world situation into a simpler world which only includes two agents: buses and clients.
+The buses is then handled by a centralized bus manager whose responsibility is to schedule the bus under some predefined policies.
+Clients are assumed greedy and thus also simply the computational cost.
+The simulation is run under three different bus policies and three different scenarios.
+The result suggested that chessboard, no matter in terms of the view of the client side but also the overall resource utilization side is far more efficient than the bus policy in operation now, as well as the all-pair poliscy.
+Although in engineering's perspective, the chessboard policy does better than the current policy, the problem involves too many political and social issues underlines in the Taiwan local culture, the problem is not expected to be solved immediately in the near future but will progress toward a better direction gradually.
+ 
+
 
 \end{document}
