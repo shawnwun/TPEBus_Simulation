@@ -74,21 +74,21 @@ We record the bus routes and intervals as in Figures~\ref{fig:bus}.
 
 \begin{figure}
 \centering
-\includegraphics[height=2.5in, width=3.1in]{taipeimap.eps}
+\includegraphics[height=1.3in, width=1.6in]{taipeimap.eps}
 \caption{The framed area is transformed into the graph shown in Figure~\ref{fig:graphex}.}
 \label{fig:tpemap}
 \end{figure}
 
 \begin{figure}
 \centering
-\includegraphics[height=2.2in, width=3.1in]{graphexample.eps}
+\includegraphics[height=1.1in, width=1.6in]{graphexample.eps}
 \caption{In this graph, edges represent the roads and nodes represent the intersections.}
 \label{fig:graphex}
 \end{figure}
 
 \begin{figure}
 \centering
-\includegraphics[height=2.4in, width=3.1in]{node.eps}
+\includegraphics[height=1.6in, width=2.0in]{node.eps}
 \caption{Part of the node information (totally 74 nodes). The entries for each node are its ID number, its name, its number of adjacent nodes, whether this node is on the verge, and its adjacent nodes.}
 \label{fig:node}
 \end{figure}
@@ -183,9 +183,9 @@ The virtual buses and clients take actions alternately at every minute/iteration
 We run 10000 minutes/iterations for every three real world scenarios and three different bus policy configurations.
 We use three types of scenarios, they are: 
 \begin{description}
-\item [Off-peak time:] Under this scenario, the flow of people are assumed to be under the assumption of random walk theorem, the average flow of people from node to node is zero. In this case, the number of clients generating from a particular node $i$ is draw from a Gaussian distribution $N_{i}^{(o)} \sim Gauss(\mu^{(o)},\sigma^{(o)})$ with mean $\mu^{(o)}$ equal to 1.2 and variance $\sigma^{(o)}$ equal to 0.5.
-\item [Morning rush hours:] This scenario tries to model the rush hours during each morning where people comes from the outskirts of the city. The only difference between it and the off-peak time is that the number of client generated from the verge node $v$ is draw from a Gaussian distribution $N_{v}^{(m)} \sim Gauss(\mu^{(m)},\sigma^{(m)})$ with mean $\mu^{(m)}$ equal to three times of other nodes 3.6.
-\item [Evening rush hours:] This scenario tries to model the rush hours during each evening where people goes back to the outskirts of the city from inside. The only difference between it and the off-peak time is that the number of client generated from the non-verge node $n-v$ is draw from a Gaussian distribution $N_{n-v}^{(m)} \sim Gauss(\mu^{(m)},\sigma^{(m)})$ with mean $\mu^{(m)}$ equal to three times of other nodes 3.6.
+\item [Off-peak time:] Under this scenario, the flow of people are assumed to be under the assumption of random walk theorem, the average flow of people from node to node is zero. In this case, the number of clients generating from a particular node $i$ is draw from a Gaussian distribution $N_{i}^{(o)} \sim Gauss(\mu^{(o)},(\sigma^2)^{(o)})$ with mean $\mu^{(o)}$ equal to 1.2 and variance $(\sigma^2)^{(o)}$ equal to 0.25.
+\item [Morning rush hours:] This scenario tries to model the rush hours during each morning where people comes from the outskirts of the city. The only difference between it and the off-peak time is that the number of client generated from the verge node $v$ is draw from a Gaussian distribution $N_{v}^{(m)} \sim Gauss(\mu^{(m)},(\sigma^2)^{(m)})$ with mean $\mu^{(m)}$ equal to three times of other nodes 3.6.
+\item [Evening rush hours:] This scenario tries to model the rush hours during each evening where people goes back to the outskirts of the city from inside. The only difference between it and the off-peak time is that the number of client generated from the non-verge node $n-v$ is draw from a Gaussian distribution $N_{n-v}^{(m)} \sim Gauss(\mu^{(m)},(\sigma^2)^{(m)})$ with mean $\mu^{(m)}$ equal to three times of other nodes 3.6.
 \end{description} 
 
 \subsection{Results}
