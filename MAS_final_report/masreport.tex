@@ -16,9 +16,9 @@
  \alignauthor
  Po-Chun Hsu\\
  	\email{r00921034@ntu.edu.tw}
- \alignauthor
- Heng Wang\\
- 	\email{r00944042@ntu.edu.tw}
+% \alignauthor
+% Heng Wang\\
+% 	\email{r00944042@ntu.edu.tw}
  }
 \begin{document}
 \maketitle
@@ -40,16 +40,18 @@ Even though the data are still limited so real-world clients is hard to model, t
 \end{abstract}
 
 \section{Introduction}
-In Taipei City, there are about 300 bus routes in operation, which makes the bus system is hard to figure out for those who are not familiar with taking bus here.
+In Taipei City, which is the city with its total area around 271.7997 square kilometers, there are about 300 bus routes in operation in which the density is extremely high.
+Several of them are long trajectory detours, which makes the bus management really hard to handle.
 Due to the overfull bus routes, people living in Taipei City could have observed that many routes overlap with others and that sometimes bus jam occurs at a bus stop.
-In addition, some of the bus routes are tortuous, so travellers on buses might spend more time than expected.
-From the above problems, it can be speculated that the energy consumption of buses in Taipei City is unnecessarily high.
-On the whole, bus transportation could be less efficient and more resource-consuming than other transportation.
+In addition, for those tortuous bus routes, buses travelers may spend more time hanging on the bus than the real value it really takes.
+On the other hand, in the resource utilization efficiency point of view, the long and wind bus routes make the resource utilization very inefficient and hard to optimize.
+The overlapped bus routes produce the redundancy of buses and thus make the  average passenger volume too small, which doesn't make the best benefit of each bus in operation.
+Furthermore, since there're many long routes on the map which is based on the truth that the average bus run on the map in each particular time span is more than needed, these facts cost the government or companies need to spend more money on the investment of bus numbers rather the quality that really affects the experience of transportation.
 These problems have existed and been noticed for many years.
-Many people have tried to find out whether there exists a bus system working better in Taipei City.
+Many people have tried to find out a better working bus system that brings the best of benefits into play in Taipei City.
 
 A chessboard-like bus network has been thought to be a solution to the above problems.
-In the late 1980s', an initial prototype of a chessboard-like bus network started to be operated, but the new routes were not used commonly then.
+In the late 1980s', an initial prototype of a chessboard-like bus network started to operate, but soon they became not that
 Most of the routes are therefore not in operation now.
 Nevertheless, in 2006, the the Commissioner of the Taipei City Department of Transportation tried to promote a new bus route network again.
 Due to opposition from some frequent bus takers who did not transfers between buses and, more importantly, from the bus companies which had vested interests (about 15 bus companies are in operation), the new policy was not executed.
@@ -122,42 +124,69 @@ number in the second entry is the departure interval of the corresponding route.
 \end{figure}
 
 \section{Agents}
-\subsection{Buses}
-\subsection{Clients}
-Client agents are generated on nodes with a randomly chosen destination.
-The number of clients generated depends on the type of scenario.
-In the next section, we have a more detailed explanation about this.
 
-In order to reduce the computational cost, we use a simple greedy algorithm to model the behavior of a client.
-If a client is at a bus stop, it first compares all the buses stopping at this bus stop.
-The client choose a bus the next stop of which is the closest to the destination.
-If this bus can take it to a node which is closer to its destination than its current location, it gets on this chosen bus.
-Otherwise, the client wait for another minute at the stop.
-Indeed, it is not intuitive for us.
-This modelling method has much room for improvement.
+In our scenario, only two kinds of agents are involved in the simulation framework to simply the over-complex world we want to model. 
+The following sections show how we assume them and model them:
+
+\subsection{Buses}
+In our task, the buses' behavior is simplify to listen to the orders from a centralized bus manager, whose work is scheduling the bus intervals and manage the routes. 
+This bus manager plays the pivot role in our simulation. 
+Since that all buses are issued directly by the bus manager, the bus manager must to maintain a policy (or a kind of configuration) to specify what task should be done now or how a task is been done.
+Rather than running by its own internal will but by the guide from the centralized bus manager, the buses are sort of single agent system rather an multi-agent one in which usually the agents involved is more than two. 
+However, even though the buses are run by a single agent system, it proves to be reasonable assumption because of the nature of buses is obeying the order (or a predefined route and time interval) rather than act freely even under the bus driver's control.
+More specifically, the bus will have several parameter resources to refer before it starts to move to the next iteration. 
+They are: 
+\begin{itemize}
+\item The route information that needs to follow from the bus manager. 
+\item The start command sends from the bus manager. If a start command is sent to the bus, the bus will start its journey.
+\item The bus interval sent also from the manager, which specifies how many minutes should send a bus out.
+\item The traffic information encoded in the edges of the map graph.
+\end{itemize}
+The bus behavior will then be:
+\begin{itemize}
+\item It will look up the traffic information in the graph to decide its current speed at each iteration.
+\item After the run of each move, if the bus passes a node, the bus will stop in the node if the node is one of the schedule stop handed from the bus manager.
+\item If the bus reaches the end of the scheduled route, the bus will turn around and go back to the beginning of the route.
+\item After the round trip route is finished, the bus will eliminate from the simulated world. All the necessary statistics will be collect to compute some indicator digits that help us to judge the performance.
+\end{itemize}
+
+
+\subsection{Clients}
+At each iteration, client agents are generated on a given node and a given destination node.
+The number of clients generated on a particular node is decided by the type of scenario we want to model, which will be explained more detailed in the following sections.
+Furthermore, in order to reduce the computational cost, the clients' behaviors are assumed to always greedy in a global fashion.
+A detailed explanation is show as follows:
+\begin{itemize}
+\item If a client is at a bus stop, it first compares all the buses stopping at this bus stop.
+\item The client will then choose a bus whose one of the next-N stops will take him to the nearest node to his target destination. N is a positive integer. 
+\item Then he will get on the chosen bus until the next stop is reached and repeat the process again.
+\item Otherwise, the client will wait for the chosen bus until it comes into the stop.
+\end{itemize}
+At first glance, although greedy algorithm might be not that intuitive to us (or as least can only apply to partial group of people but not at all ),
+we believe it can still reflect some interesting facts we want by the simplified simulation.
+
 
 \section{Simulation}
-In this section, we first introduce the environment settings of our simulation.
-Three scenarios and different policies of bus agents are taken into consideration.
-After that, we present the experimental results of the different environment settings.
+In this section, we first introduce how we assume our environments how we run our simulations on the predefined environments.
+Three scenarios to mimic the real world behavior under different time situations  and three different policies of bus agents are taken into consideration.
+Last but not least, the experiment results, analysis, and discussion regarding to the results are presented at the end of this section.
 
 \subsection{Environment Settings}
-In our simulations, we set one minute as the basic unit of time.
-The virtual buses and clients take actions at every minute.
-We run 10000 units of time for each type of settings to get stable results.
+In our simulations, each iteration in the simulated world is one minute in the real world. We use a small time span for each iteration to mimic the continuous real environment dynamics as like as possible.
+The virtual buses and clients take actions alternately at every minute/iteration.
+We run 10000 minutes/iterations for every three real world scenarios and three different bus policy configurations.
 
-We use three types of scenarios --- off-peak time, morning rush hours and evening rush hours.
-For instance, during the morning rush hours, many clients could travel from the suburb to downtown Taipei.
-That is, a client is more possible to move from the nodes on the verge of the selected area to the node inside the area.
-Therefore, we set the three scenarios in the following way.
-In the off-peak scenario, we generate clients form every node at every minute.
-The number of clients to generate is sampled from a Gaussian distribution with a mean of 1.2 and a standard deviation of 0.5.
-In the morning-rush-hour scenario, the number of clients to generate at the side nodes is increased --- sampled from from a Gaussian distribution with a mean of 3.6 and a standard deviation of 0.5.
-In the evening-rush-hour scenario, this modification is operated on the inner nodes.
-Once a client is generated, it randomly choose another node as its destination.
+We use three types of scenarios, they are: 
 
-\subsection{Policies of Bus Agents}
+\begin{description}
+\item [Off-peak time:] Under this scenario, the flow of people are assumed to be under the assumption of random walk theorem, the average flow of people from node to node is zero. In this case, the number of clients generating from a particular node $i$ is draw from a Gaussian distribution $N_{i}^{(o)} \sim Gauss(\mu^{(o)},\sigma^{(o)})$ with mean $\mu^{(o)}$ equal to 1.2 and variance $\sigma^{(o)}$ equal to 0.5.
+\item [Morning rush hours:] This scenario tries to model the rush hours during each morning where people comes from the outskirts of the city. The only difference between it and the off-peak time is that the number of client generated from the verge node $v$ is draw from a Gaussian distribution $N_{v}^{(m)} \sim Gauss(\mu^{(m)},\sigma^{(m)})$ with mean $\mu^{(m)}$ equal to three times of other nodes 3.6.
+\item [Evening rush hours:] This scenario tries to model the rush hours during each evening where people goes back to the outskirts of the city from inside. The only difference between it and the off-peak time is that the number of client generated from the non-verge node $n-v$ is draw from a Gaussian distribution $N_{n-v}^{(m)} \sim Gauss(\mu^{(m)},\sigma^{(m)})$ with mean $\mu^{(m)}$ equal to three times of other nodes 3.6.
+\end{description} 
+
 \subsection{Results}
+Fig.~\ref{} show our experimental results under three different bus policies when the bus policy is greedy
+
 
 \section{Conclusion}
 
